@@ -1,22 +1,63 @@
 #!/usr/bin/env python
 
-from conway import Conway
-from yawnoc import Yawnoc
+from cconway import ColorConway as Conway
+from cyawnoc import ColorYawnoc as Yawnoc
 
-from bash.colors import colorize
+def main(data):
+    C = Conway(data)
+    print "Target:"
+    print C
+    print
 
-filename = 'random.txt'
-filename = 'glider.txt'
+    C.step()
+    print "Given:"
+    print C
+    print
 
-c = Conway.load(filename)
-print c
+    Y = Yawnoc(C)
+    print "Yawnoc:"
+    print Y
+    print
 
-print
+    Y.corroborate()
+    print "Corroborated:"
+    print Y
+    print
 
-y = Yawnoc.load(filename)
-print y
+    print "Clue:"
+    print C
+    print
 
-print
+    #Y.guess()
+    #print "Guess:"
+    #print Y
+    #print
 
-y.corroborate()
-print y
+    #guessdata = [[c > 0.5 for c in row] for row in Y.confidence]
+    #G = Conway(guessdata)
+    #print "Guess:"
+    #print G
+    #print 
+
+    #G.step()
+    #print "Next:"
+    #print G
+    #print
+
+    #print "Compare:"
+    #print C
+    #print
+
+
+if __name__ == '__main__':
+    from argparse import ArgumentParser
+    ap = ArgumentParser()
+    ap.add_argument('-f', '--filename', help="Load GOL file.",
+                    default='data/glider.gol')
+    args = ap.parse_args()
+    with open(args.filename, 'r') as inf:
+        T = (line.strip() for line in inf.readlines()
+             if line.strip() != '')
+        T = (line.split(' ') for line in T)
+        T = [[c in "1X#" for c in row] for row in T]
+        main(T)
