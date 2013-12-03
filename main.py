@@ -1,7 +1,7 @@
 #!/usr/bin/env python
 
-from cconway import ColorConway as Conway
-from cyawnoc import ColorYawnoc as Yawnoc
+from conway.colorconway import ColorConway as Conway
+from yawnoc.coloryawnoc import ColorYawnoc as Yawnoc
 
 def main(data):
     C = Conway(data)

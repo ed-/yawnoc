@@ -1,5 +1,5 @@
 from yawnoc import Yawnoc
-from bash.colors import GRAYize
+from common.bashcolors import GRAYize
 
 class ColorYawnoc(Yawnoc):
     def __str__(self):

@@ -1,4 +1,4 @@
-from bash.colors import RGBize
+from common.bashcolors import RGBize
 from conway import Conway
 
 class ColorConway(Conway):
