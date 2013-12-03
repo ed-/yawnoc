@@ -28,9 +28,9 @@ class Conway(object):
             return False
 
     def neighborhood(self, row, column):
-        return  [self._cell_at(row + r, column + c)
-                 for r in (-1, 0, 1)
-                 for c in (-1, 0, 1)]
+        return [self._cell_at(row + r, column + c)
+                for r in (-1, 0, 1)
+                for c in (-1, 0, 1)]
 
     def _gol(self, row, column):
         neighborhood = self.neighborhood(row, column)

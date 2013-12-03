@@ -1,5 +1,6 @@
 #!/usr/bin/env python
 
+
 def cat(*bits):
     # Concatenate an unknown number of bits and return an integer.
     r = 0
@@ -80,6 +81,7 @@ class History(object):
     def NE(self):
         return cat(self.n, self.ne,
                    self.c, self.e)
+
     @property
     def W(self):
         return cat(self.nw, self.n,
@@ -180,7 +182,6 @@ class Alibi(object):
     def corroborate(self, neighbors):
         old_total = len(self.histories)
         neighborhood = zip(neighbors, OPPOSITES, CARDINALS)
-            
         for neighbor, nshift, cshift in neighborhood:
             if neighbor is None:
                 continue

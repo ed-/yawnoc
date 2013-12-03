@@ -1,6 +1,7 @@
 from common.bashcolors import RGBize
 from conway import Conway
 
+
 class ColorConway(Conway):
     def __str__(self):
         gray = lambda c: (5, 5, 5) if c else (0, 0, 0)

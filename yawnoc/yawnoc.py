@@ -2,6 +2,7 @@
 # Yawnoc tries to work Conway backwards.
 from alibi import Alibi
 
+
 class Yawnoc(object):
     def __init__(self, conway):
         self.cells = [[Alibi(Z=cell)
@@ -46,7 +47,7 @@ class Yawnoc(object):
     def neighbors(self, row, column):
         r, c = row, column
         cardinals = [(r - 1, c - 1), (r - 1, c), (r - 1, c + 1),
-                     (r    , c - 1),             (r    , c + 1),
+                     (r, c - 1), (r, c + 1),
                      (r + 1, c - 1), (r + 1, c), (r + 1, c + 1)]
         return [self.cell_at(r, c) for (r, c) in cardinals]
 

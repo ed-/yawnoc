@@ -3,6 +3,7 @@
 from conway.colorconway import ColorConway as Conway
 from yawnoc.coloryawnoc import ColorYawnoc as Yawnoc
 
+
 def main(data):
     C = Conway(data)
     print "Target:"
@@ -37,7 +38,7 @@ def main(data):
     #G = Conway(guessdata)
     #print "Guess:"
     #print G
-    #print 
+    #print
 
     #G.step()
     #print "Next:"

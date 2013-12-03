@@ -4,8 +4,10 @@ from conway import Conway
 from random import seed
 from random import random
 
+
 def coin(chance=0.5):
     return random() <= chance
+
 
 class RandomConway(Conway):
     cells = None
@@ -29,4 +31,3 @@ if __name__ == '__main__':
         seed(args.seed)
     chance = 0.5 if args.chance is None else args.chance
     print RandomConway(args.rows, args.columns, chance)
-

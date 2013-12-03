@@ -1,6 +1,7 @@
 from yawnoc import Yawnoc
 from common.bashcolors import GRAYize
 
+
 class ColorYawnoc(Yawnoc):
     def __str__(self):
         return '\n'.join((''.join(GRAYize('  ', cell.confidence)
