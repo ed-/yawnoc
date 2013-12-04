@@ -1,13 +1,37 @@
 class Conway(object):
     cells = None
+    ALIVE = '[]'
+    DEAD = '  '
 
     def __init__(self, cells):
         self.cells = cells[:]
 
     def __str__(self):
-        T = {True: '#', False: '.'}
-        return '\n'.join(' '.join(T[cell] for cell in row)
+        T = {True: self.ALIVE, False: self.DEAD}
+        return '\n'.join(''.join(T[cell] for cell in row)
                          for row in self.cells)
+
+    @classmethod
+    def load(cls, filename, ALIVE=None, DEAD=None):
+        ALIVE = ALIVE or cls.ALIVE
+        DEAD = DEAD or cls.DEAD
+        with open(filename, 'r') as inf:
+            filedata = [line for line in inf.read().split('\n') if line]
+            data = []
+            for line in filedata:
+                linedata = []
+                while line:
+                    if line.startswith(ALIVE):
+                        linedata.append(True)
+                        line = line[len(ALIVE):]
+                    elif line.startswith(DEAD):
+                        linedata.append(False)
+                        line = line[len(DEAD):]
+                    else:
+                        print "wh"
+                        line = line[1:]
+                data.append(linedata)
+            return cls(data)
 
     @property
     def rows(self):

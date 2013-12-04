@@ -1,11 +1,24 @@
 #!/usr/bin/env python
+# Load a GOL file, and analyze it to see what state came before.
 
-from conway.colorconway import ColorConway as Conway
-from yawnoc.coloryawnoc import ColorYawnoc as Yawnoc
+from common.bashcolors import GRAYize
+from common.bashcolors import RGBize
+from conway.conway import Conway
+from yawnoc.yawnoc import Yawnoc
 
+class ColorConway(Conway):
+    ALIVE = RGBize('[]', (5, 5, 5))
+    DEAD = '  '
 
-def main(data):
-    C = Conway(data)
+class ColorYawnoc(Yawnoc):
+    def __str__(self):
+        return '\n'.join((''.join(GRAYize('  ', cell.confidence)
+                          for cell in row))
+                         for row in self.cells)
+
+def main(args):
+    C = ColorConway.load(args.filename, ALIVE='[]', DEAD='  ')
+    saved = ColorConway(C.cells)
     print "Target:"
     print C
     print
@@ -15,50 +28,30 @@ def main(data):
     print C
     print
 
-    Y = Yawnoc(C)
-    print "Yawnoc:"
-    print Y
-    print
-
-    Y.corroborate()
+    Y = ColorYawnoc(C)
+    Y.corroborate(debug=args.debug)
     print "Corroborated:"
     print Y
     print
 
-    print "Clue:"
-    print C
+    print "Check:"
+    print saved
     print
 
-    #Y.guess()
-    #print "Guess:"
-    #print Y
+    #print "Spans:"
+    #print Y.spanstr
     #print
 
-    #guessdata = [[c > 0.5 for c in row] for row in Y.confidence]
-    #G = Conway(guessdata)
-    #print "Guess:"
-    #print G
+    #print "Confidence:"
+    #print Y.confstr
     #print
-
-    #G.step()
-    #print "Next:"
-    #print G
-    #print
-
-    #print "Compare:"
-    #print C
-    #print
-
 
 if __name__ == '__main__':
     from argparse import ArgumentParser
     ap = ArgumentParser()
     ap.add_argument('-f', '--filename', help="Load GOL file.",
                     default='data/glider.gol')
+    ap.add_argument('-D', '--debug', action='store_true',
+                    help="Show progress during calculations.")
     args = ap.parse_args()
-    with open(args.filename, 'r') as inf:
-        T = (line.strip() for line in inf.readlines()
-             if line.strip() != '')
-        T = (line.split(' ') for line in T)
-        T = [[c in "1X#" for c in row] for row in T]
-        main(T)
+    main(args)

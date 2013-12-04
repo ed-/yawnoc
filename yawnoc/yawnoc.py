@@ -10,6 +10,9 @@ class Yawnoc(object):
                       for row in conway.cells]
         self._oob = {}
 
+    def __str__(self):
+        return self.confstr
+
     @property
     def rows(self):
         return len(self.cells)
@@ -26,10 +29,28 @@ class Yawnoc(object):
                  for cell in row]
                 for row in self.cells]
 
+    @property
+    def confstr(self):
+        return '\n'.join(' '.join('%0.3f' % cell for cell in row)
+                         for row in self.confidence)
+
+    @property
+    def span(self):
+        return [[len(cell.histories)
+                 for cell in row]
+                for row in self.cells]
+
+    @property
+    def spanstr(self):
+        return '\n'.join(' '.join(('%3i' % cell) for cell in row)
+                          for row in self.span)
+
+
     def cell_at(self, row, column):
         try:
             return self.cells[row][column]
         except IndexError:
+            # Assume all cells out of bounds are always dead.
             oob = Alibi(Z=False)
             if (row, column) in self._oob:
                 return self._oob[(row, column)]
@@ -41,6 +62,7 @@ class Yawnoc(object):
                 oob.filter(nw=False, w=False, sw=False)
             if column >= self.columns:
                 oob.filter(ne=False, e=False, se=False)
+            # Memoize the result, it won't change.
             self._oob[(row, column)] = oob
             return oob
 
@@ -51,7 +73,7 @@ class Yawnoc(object):
                      (r + 1, c - 1), (r + 1, c), (r + 1, c + 1)]
         return [self.cell_at(r, c) for (r, c) in cardinals]
 
-    def corroborate(self):
+    def corroborate(self, debug=False):
         total_removed = 0
         removed = None
         while removed != 0:
@@ -61,19 +83,8 @@ class Yawnoc(object):
                     neighbors = self.neighbors(r, c)
                     culled = self.cell_at(r, c).corroborate(neighbors)
                     removed += culled
+                    if debug and culled:
+                        print self
+                        print
             total_removed += removed
-        return total_removed
-
-    def guess(self):
-        total_removed = 0
-        tolerance = 0.0
-        while tolerance < 0.5:
-            _ = raw_input("Tolerance: %0.3f" % tolerance)
-            removed = 0
-            for row in self.cells:
-                for cell in row:
-                    removed += cell.guess(tolerance)
-                    removed += self.corroborate()
-            total_removed += removed
-            tolerance += 0.01
         return total_removed
