@@ -14,6 +14,10 @@ CARDINALS = ['NW', 'N', 'NE', 'W', 'E', 'SW', 'S', 'SE']
 OPPOSITES = ['SE', 'S', 'SW', 'E', 'W', 'NE', 'N', 'NW']
 
 
+class Impossible(Exception):
+    pass
+
+
 class History(object):
     # A cell and its neighborhood. The center cell's next state is property Z.
     bits = None
@@ -160,8 +164,6 @@ class Alibi(object):
 
     @property
     def confidence(self):
-        if not self.histories:
-            return None
         alive = len([h for h in self.histories if h.c])
         return float(alive) / len(self.histories)
 
@@ -170,6 +172,8 @@ class Alibi(object):
         for key, value in kwargs.items():
             self.histories = [h for h in self.histories
                               if getattr(h, key) == value]
+        if not self.histories:
+            raise Impossible()
         return old_total - len(self.histories)
 
     def guess(self, tolerance=0.0):
@@ -188,4 +192,6 @@ class Alibi(object):
             nshifted = set(getattr(neighbor, nshift))
             self.histories = [h for h in self.histories
                               if getattr(h, cshift) in nshifted]
+            if not self.histories:
+                raise Impossible()
         return old_total - len(self.histories)

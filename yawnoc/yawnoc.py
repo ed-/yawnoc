@@ -1,6 +1,17 @@
 #!/usr/bin/env python
 # Yawnoc tries to work Conway backwards.
 from alibi import Alibi
+from alibi import Impossible
+
+
+class GardenOfEden(Exception):
+    # Board appears to be impossible to get to from anywhere.
+    pass
+
+
+class BadGuess(Exception):
+    # Guess we made a poor assumption along the way.
+    pass
 
 
 class Yawnoc(object):
@@ -86,11 +97,14 @@ class Yawnoc(object):
             for r in range(self.rows):
                 for c in range(self.columns):
                     neighbors = self.neighbors(r, c)
-                    culled = self.cell_at(r, c).corroborate(neighbors)
-                    removed += culled
-                    if debug and culled:
-                        print self
-                        print
+                    try:
+                        culled = self.cell_at(r, c).corroborate(neighbors)
+                        removed += culled
+                        if debug and culled:
+                            print self
+                            print
+                    except Impossible:
+                        raise GardenOfEden()
             total_removed += removed
         return total_removed
 
@@ -99,7 +113,11 @@ class Yawnoc(object):
             for c in range(self.columns):
                 culled = self.cell_at(r, c).guess(0.25)
                 if culled:
-                    self.corroborate(debug=debug)
+                    try:
+                        self.corroborate(debug=debug)
+                    except GardenOfEden:
+                        # Let's assume it was a bad guess.
+                        raise BadGuess()
                 if debug and culled:
                     print self
                     print

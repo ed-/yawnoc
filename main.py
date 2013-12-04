@@ -4,6 +4,7 @@
 from common.bashcolors import GRAYize
 from common.bashcolors import RGBize
 from conway.conway import Conway
+from yawnoc.yawnoc import GardenOfEden
 from yawnoc.yawnoc import Yawnoc
 
 
@@ -17,6 +18,31 @@ class ColorYawnoc(Yawnoc):
         return '\n'.join((''.join(GRAYize('  ', cell.confidence)
                           for cell in row))
                          for row in self.cells)
+
+def find_garden(args):
+    C = ColorConway.load(args.filename, ALIVE='[]', DEAD='  ')
+    saved = ColorConway(C.cells)
+    print "Given:"
+    print C
+    print
+
+    Y = ColorYawnoc(C)
+    try:
+        Y.corroborate(debug=args.debug)
+    except GardenOfEden:
+        print "Looks like a GoE."
+    else:
+        print "Looks fine to me."
+        print Y
+        print
+
+        print "Spans:"
+        print Y.spanstr
+        print
+
+        print "Confidence:"
+        print Y.confstr
+        print
 
 
 def main(args):
@@ -52,6 +78,10 @@ def main(args):
     print C
     print
 
+    print "Score:"
+    print C.diff(G)
+    print
+
     #print "Spans:"
     #print Y.spanstr
     #print
@@ -69,3 +99,4 @@ if __name__ == '__main__':
                     help="Show progress during calculations.")
     args = ap.parse_args()
     main(args)
+    #find_garden(args)

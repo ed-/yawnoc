@@ -11,6 +11,13 @@ class Conway(object):
         return '\n'.join(''.join(T[cell] for cell in row)
                          for row in self.cells)
 
+    def diff(self, other):
+        score = 0
+        for myrow, hisrow in zip(self.cells, other.cells):
+            for mycell, hiscell in zip(myrow, hisrow):
+                score += int(mycell != hiscell)
+        return score
+
     @classmethod
     def load(cls, filename, ALIVE=None, DEAD=None):
         ALIVE = ALIVE or cls.ALIVE
