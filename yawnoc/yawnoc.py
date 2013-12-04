@@ -43,8 +43,7 @@ class Yawnoc(object):
     @property
     def spanstr(self):
         return '\n'.join(' '.join(('%3i' % cell) for cell in row)
-                          for row in self.span)
-
+                         for row in self.span)
 
     def cell_at(self, row, column):
         try:

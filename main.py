@@ -6,15 +6,18 @@ from common.bashcolors import RGBize
 from conway.conway import Conway
 from yawnoc.yawnoc import Yawnoc
 
+
 class ColorConway(Conway):
     ALIVE = RGBize('[]', (5, 5, 5))
     DEAD = '  '
+
 
 class ColorYawnoc(Yawnoc):
     def __str__(self):
         return '\n'.join((''.join(GRAYize('  ', cell.confidence)
                           for cell in row))
                          for row in self.cells)
+
 
 def main(args):
     C = ColorConway.load(args.filename, ALIVE='[]', DEAD='  ')
