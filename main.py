@@ -37,8 +37,19 @@ def main(args):
     print Y
     print
 
+    Y.guess(debug=args.debug)
+    G = ColorConway(Y.bestguess)
+    print "Guess:"
+    print G
+    print
+
+    print "Next:"
+    G.step()
+    print G
+    print
+
     print "Check:"
-    print saved
+    print C
     print
 
     #print "Spans:"

@@ -30,6 +30,12 @@ class Yawnoc(object):
                 for row in self.cells]
 
     @property
+    def bestguess(self):
+        return [[cell.confidence >= 0.5
+                 for cell in row]
+                for row in self.cells]
+
+    @property
     def confstr(self):
         return '\n'.join(' '.join('%0.3f' % cell for cell in row)
                          for row in self.confidence)
@@ -87,3 +93,13 @@ class Yawnoc(object):
                         print
             total_removed += removed
         return total_removed
+
+    def guess(self, debug=False):
+        for r in range(self.rows):
+            for c in range(self.columns):
+                culled = self.cell_at(r, c).guess(0.25)
+                if culled:
+                    self.corroborate(debug=debug)
+                if debug and culled:
+                    print self
+                    print
