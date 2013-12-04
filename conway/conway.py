@@ -28,7 +28,6 @@ class Conway(object):
                         linedata.append(False)
                         line = line[len(DEAD):]
                     else:
-                        print "wh"
                         line = line[1:]
                 data.append(linedata)
             return cls(data)
