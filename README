@@ -1,1 +1,29 @@
 Yawnoc reverses Conway's Game of Life.
+Well, it tries.
+
+Main has two functions: reverse, and random.
+
+= Reverse =
+Load a Conway state from a file, and then use Yawnoc to
+find a state C such that C.step() yields the loaded state.
+Accuracy is measured as a percentage of the cells that are the same
+between the given and the guess.
+
+usage: main.py random rows columns [--color] [--debug] [-s SEED] [-x CHANCE]
+    rows: height of the field
+    columns: width of the field
+    seed: random seed
+    chance: fill percentage. 1.0 is full, 0.0 is empty.
+    color: use ansi colors in terminal to illustrate progress.
+    debug: show Yawnoc board during corroboration phase.
+
+
+= Random =
+Generate a random RxC grid and step() it once. This guarantees we start
+with a state that isn't a Garden of Eden. Then, use Yawnoc to guess and
+score the results as in Reverse.
+
+usage: main.py reverse filename [--color] [--debug]
+    filename: data file to load.
+    color: use ansi colors in terminal to illustrate progress.
+    debug: show Yawnoc board during corroboration phase.

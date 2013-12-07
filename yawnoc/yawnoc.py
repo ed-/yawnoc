@@ -1,17 +1,9 @@
 #!/usr/bin/env python
 # Yawnoc tries to work Conway backwards.
 from alibi import Alibi
-from alibi import Impossible
-
-
-class GardenOfEden(Exception):
-    # Board appears to be impossible to get to from anywhere.
-    pass
-
-
-class BadGuess(Exception):
-    # Guess we made a poor assumption along the way.
-    pass
+from exceptions import BadGuess
+from exceptions import GardenOfEden
+from exceptions import Impossible
 
 
 class Yawnoc(object):
