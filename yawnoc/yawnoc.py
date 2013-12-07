@@ -19,7 +19,15 @@ class Yawnoc(object):
         self.cells = [[Alibi(Z=cell)
                        for cell in row]
                       for row in conway.cells]
-        self._oob = {}
+        for row in range(self.rows):
+            edge = self.columns - 1
+            self.cell_at(row, 0).filter(nw=False, w=False, sw=False)
+            self.cell_at(row, edge).filter(ne=False, e=False, se=False)
+
+        for column in range(self.columns):
+            edge = self.rows - 1
+            self.cell_at(0, column).filter(nw=False, n=False, ne=False)
+            self.cell_at(edge, column).filter(sw=False, s=False, se=False)
 
     def __str__(self):
         return self.confstr
@@ -64,23 +72,11 @@ class Yawnoc(object):
 
     def cell_at(self, row, column):
         try:
+            assert (row >= 0) and (row < self.rows)
+            assert (column >= 0) and (column < self.columns)
             return self.cells[row][column]
-        except IndexError:
-            # Assume all cells out of bounds are always dead.
-            oob = Alibi(Z=False)
-            if (row, column) in self._oob:
-                return self._oob[(row, column)]
-            if row < 0:
-                oob.filter(nw=False, n=False, ne=False)
-            if row >= self.rows:
-                oob.filter(sw=False, s=False, se=False)
-            if column < 0:
-                oob.filter(nw=False, w=False, sw=False)
-            if column >= self.columns:
-                oob.filter(ne=False, e=False, se=False)
-            # Memoize the result, it won't change.
-            self._oob[(row, column)] = oob
-            return oob
+        except (AssertionError, IndexError):
+            return None
 
     def neighbors(self, row, column):
         r, c = row, column
@@ -111,7 +107,7 @@ class Yawnoc(object):
     def guess(self, debug=False):
         for r in range(self.rows):
             for c in range(self.columns):
-                culled = self.cell_at(r, c).guess(0.25)
+                culled = self.cell_at(r, c).guess(0.5)
                 if culled:
                     try:
                         self.corroborate(debug=debug)

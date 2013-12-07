@@ -58,45 +58,65 @@ def main(args):
     print
 
     Y = ColorYawnoc(C)
+    print "Initial:"
+    print Y
+    print
+
+    if args.report:
+        print "Initial spans:"
+        print Y.spanstr
+        print
+
+        print "Initial confidence:"
+        print Y.confstr
+        print
+
     Y.corroborate(debug=args.debug)
     print "Corroborated:"
     print Y
     print
 
-    Y.guess(debug=args.debug)
-    G = ColorConway(Y.bestguess)
-    print "Guess:"
-    print G
-    print
+    if args.report:
+        print "Spans:"
+        print Y.spanstr
+        print
 
-    print "Next:"
-    G.step()
-    print G
-    print
+        print "Confidence:"
+        print Y.confstr
+        print
 
-    print "Check:"
-    print C
-    print
+    if args.guess:
+        Y.guess(debug=args.debug)
+        G = ColorConway(Y.bestguess)
+        print "Guess:"
+        print G
+        print
 
-    print "Score:"
-    print C.diff(G)
-    print
+        print "Next:"
+        G.step()
+        print G
+        print
 
-    #print "Spans:"
-    #print Y.spanstr
-    #print
+        print "Check:"
+        print C
+        print
 
-    #print "Confidence:"
-    #print Y.confstr
-    #print
+        print "Score:"
+        print C.diff(G)
+        print
+
 
 if __name__ == '__main__':
     from argparse import ArgumentParser
     ap = ArgumentParser()
     ap.add_argument('-f', '--filename', help="Load GOL file.",
                     default='data/glider.gol')
-    ap.add_argument('-D', '--debug', action='store_true',
+    ap.add_argument('-d', '--debug', action='store_true',
                     help="Show progress during calculations.")
+    ap.add_argument('-g', '--guess', action='store_true',
+                    help="Guess and score.")
+    ap.add_argument('-r', '--report', action='store_true',
+                    help="Show span and confidence matrices.")
     args = ap.parse_args()
     main(args)
     #find_garden(args)

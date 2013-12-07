@@ -12,11 +12,13 @@ class Conway(object):
                          for row in self.cells)
 
     def diff(self, other):
-        score = 0
+        score = 0.0
+        total = 0.0
         for myrow, hisrow in zip(self.cells, other.cells):
             for mycell, hiscell in zip(myrow, hisrow):
-                score += int(mycell != hiscell)
-        return score
+                score += int(mycell == hiscell)
+                total += 1.0
+        return score / total
 
     @classmethod
     def load(cls, filename, ALIVE=None, DEAD=None):
