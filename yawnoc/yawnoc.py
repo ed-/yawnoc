@@ -6,6 +6,12 @@ from exceptions import GardenOfEden
 from exceptions import Impossible
 
 
+def neighborhood(r, c):
+    return [(r - 1, c - 1), (r - 1, c), (r - 1, c + 1),
+            (r, c - 1), (r, c + 1),
+            (r + 1, c - 1), (r + 1, c), (r + 1, c + 1)]
+
+
 class Yawnoc(object):
     def __init__(self, conway):
         self.cells = [[Alibi(Z=cell)
@@ -71,28 +77,29 @@ class Yawnoc(object):
             return None
 
     def neighbors(self, row, column):
-        r, c = row, column
-        cardinals = [(r - 1, c - 1), (r - 1, c), (r - 1, c + 1),
-                     (r, c - 1), (r, c + 1),
-                     (r + 1, c - 1), (r + 1, c), (r + 1, c + 1)]
-        return [self.cell_at(r, c) for (r, c) in cardinals]
+        return [self.cell_at(r, c) for (r, c) in neighborhood(row, column)]
 
     def corroborate(self, debug=False):
         total_removed = 0
-        removed = None
-        while removed != 0:
+        rc = [(r, c) for r in range(self.rows)
+              for c in range(self.columns)]
+        while rc:
             removed = 0
-            for r in range(self.rows):
-                for c in range(self.columns):
-                    neighbors = self.neighbors(r, c)
-                    try:
-                        culled = self.cell_at(r, c).corroborate(neighbors)
-                        removed += culled
-                        if debug and culled:
-                            print self
-                            print
-                    except Impossible:
-                        raise GardenOfEden()
+            r, c = rc.pop(0)
+            if self.cell_at(r, c) is None:
+                continue
+            neighbors = self.neighbors(r, c)
+            try:
+                culled = self.cell_at(r, c).corroborate(neighbors)
+                removed += culled
+                if culled:
+                    rc.extend(neighborhood(r, c))
+                    rc.append((r, c))
+                    if debug:
+                        print self
+                        print
+            except Impossible:
+                raise GardenOfEden()
             total_removed += removed
         return total_removed
 
