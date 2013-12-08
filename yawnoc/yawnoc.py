@@ -94,7 +94,6 @@ class Yawnoc(object):
                 removed += culled
                 if culled:
                     rc.extend(neighborhood(r, c))
-                    rc.append((r, c))
                     if debug:
                         print self
                         print
