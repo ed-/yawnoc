@@ -79,13 +79,18 @@ class Yawnoc(object):
     def neighbors(self, row, column):
         return [self.cell_at(r, c) for (r, c) in neighborhood(row, column)]
 
-    def corroborate(self, debug=False):
+    def corroborate(self, check=None, debug=False):
         total_removed = 0
-        rc = [(r, c) for r in range(self.rows)
-              for c in range(self.columns)]
+        rc = check
+        if rc is None:
+            rc = [(r, c) for r in range(self.rows)
+                  for c in range(self.columns)]
+        tolerance = lambda x: abs(0.5 - self.cell_at(*x).confidence)
+        ftolerance = lambda x: -1 if self.cell_at(*x) is None else tolerance(x)
         while rc:
             removed = 0
-            r, c = rc.pop(0)
+            rc = sorted(list(set(rc)), key=ftolerance, reverse=True)
+            r, c = rc.pop()
             if self.cell_at(r, c) is None:
                 continue
             neighbors = self.neighbors(r, c)
@@ -95,7 +100,7 @@ class Yawnoc(object):
                 if culled:
                     rc.extend(neighborhood(r, c))
                     if debug:
-                        print self
+                        print self, len(rc)
                         print
             except Impossible:
                 raise GardenOfEden()
@@ -103,15 +108,21 @@ class Yawnoc(object):
         return total_removed
 
     def guess(self, debug=False):
-        for r in range(self.rows):
-            for c in range(self.columns):
-                culled = self.cell_at(r, c).guess(0.5)
-                if culled:
-                    try:
-                        self.corroborate(debug=debug)
-                    except GardenOfEden:
-                        # Let's assume it was a bad guess.
-                        raise BadGuess()
-                if debug and culled:
-                    print self
-                    print
+        total_removed = 0
+        rc = [(r, c) for r in range(self.rows)
+              for c in range(self.columns)]
+        tolerance = lambda x: abs(0.5 - self.cell_at(*x).confidence)
+        ftolerance = lambda x: -1 if self.cell_at(*x) is None else tolerance(x)
+        while rc:
+            removed = 0
+            rc = sorted(list(set(rc)), key=ftolerance)
+            r, c = rc.pop()
+            if self.cell_at(r, c) is None:
+                continue
+            culled = self.cell_at(r, c).guess(0.5)
+            if culled:
+                try:
+                    self.corroborate(check=[(r, c)], debug=debug)
+                except GardenOfEden:
+                    # Let's assume it was a bad guess.
+                    raise BadGuess()

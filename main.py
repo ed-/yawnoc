@@ -77,10 +77,6 @@ def do_random_test(parser):
     Y = YC(C)
 
     Y.corroborate(debug=args.debug)
-    print "Corroborated:"
-    print Y
-    print
-
     print "Spans:"
     print Y.spanstr
     print
